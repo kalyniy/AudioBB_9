@@ -1,18 +1,27 @@
 package edu.temple.audiobb
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.ServiceConnection
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
 import android.view.View
 import android.widget.ImageButton
+import android.widget.SeekBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import edu.temple.audlibplayer.PlayerService
 
-class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface {
+class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface, ControlFragment.IController {
 
     private lateinit var bookListFragment : BookListFragment
+    private lateinit var binder: PlayerService.MediaControlBinder
 
+    private var isConnected = false
+    private var currentProgress: Int = 0
     private val searchRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         supportFragmentManager.popBackStack()
         it.data?.run {
@@ -100,5 +109,52 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
                 .addToBackStack(null)
                 .commit()
         }
+    }
+    val progressHandler = Handler(Looper.getMainLooper()){
+
+        if(it.obj != null) {
+            val bookProgress = it.obj as PlayerService.BookProgress
+
+            currentProgress = bookProgress.progress
+            var seekBar = findViewById<SeekBar>(R.id.seekBar)
+            seekBar.progress = currentProgress
+
+        }
+        true
+    }
+
+    val serviceConnection = object: ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            isConnected = true
+            binder = service as PlayerService.MediaControlBinder
+            binder.setProgressHandler(progressHandler)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isConnected = false
+        }
+
+    }
+    override fun play() {
+        var book = selectedBookViewModel.getSelectedBook().value
+        if(book != null && isConnected)
+        {
+            binder.play(book.id)
+        }
+
+    }
+    override fun pause() {
+        if(isConnected && binder.isBinderAlive) {
+            binder.pause()
+        }
+    }
+
+    override fun stop() {
+        if(isConnected && binder.isBinderAlive) {
+            binder.stop()
+        }
+    }
+
+    override fun seekbarProgress() {
     }
 }
