@@ -6,16 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-private const val ARG_PARAM1 = "param1"
+private const val ARG_BOOK = "book"
 
 class ControlFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private lateinit var param_book: Book
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            param_book = it.getSerializable(ARG_BOOK) as Book
         }
     }
 
@@ -30,10 +30,10 @@ class ControlFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: Book) =
             ControlFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putSerializable(ARG_BOOK, param1)
                 }
             }
     }
