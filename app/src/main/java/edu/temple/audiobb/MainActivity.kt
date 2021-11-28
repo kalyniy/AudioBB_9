@@ -8,10 +8,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.service.controls.Control
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.SeekBar
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.FragmentContainer
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import edu.temple.audlibplayer.PlayerService
 
@@ -22,6 +26,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
 
     private var isConnected = false
     private var currentProgress: Int = 0
+    private var selectedBook: Book? = null
     private val searchRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         supportFragmentManager.popBackStack()
         it.data?.run {
@@ -108,6 +113,20 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookSelectedInterface
                 .setReorderingAllowed(true)
                 .addToBackStack(null)
                 .commit()
+        }
+        else
+        {
+            selectedBook = selectedBookViewModel.getSelectedBook().value
+            if(selectedBook != null)
+            {
+                Log.d("TEST", selectedBook!!.title)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.container3, ControlFragment.newInstance(selectedBook!!))
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
         }
     }
     val progressHandler = Handler(Looper.getMainLooper()){
