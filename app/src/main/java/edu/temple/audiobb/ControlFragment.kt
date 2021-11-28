@@ -1,5 +1,6 @@
 package edu.temple.audiobb
 
+import android.content.Context
 import android.media.Image
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,7 +21,10 @@ class ControlFragment : Fragment() {
     private lateinit var btnStop: ImageButton
     private lateinit var seekBar: SeekBar
     private lateinit var txtTime: TextView
+    var controller: IController? = null
+    fun controlFragment() {
 
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +48,24 @@ class ControlFragment : Fragment() {
 
         return v
     }
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        btnPlay.setOnClickListener(View.OnClickListener {
+            //controller!!.play()
+        })
+        btnPause.setOnClickListener(View.OnClickListener {
+            //controller!!.pause()
+        })
+        btnStop.setOnClickListener(View.OnClickListener {
+            //controller!!.stop()
+        })
+    }
+    interface IController {
+        fun play()
+        fun pause()
+        fun stop()
+        fun seekbarProgress()
+    }
     companion object {
 
         @JvmStatic
