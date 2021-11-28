@@ -19,12 +19,11 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="259dp"
+        android:layout_height="562dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/container3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/container1"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,5 +38,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_search" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/container3"
+        android:name="edu.temple.audiobb.ControlFragment"
+        android:layout_width="251dp"
+        android:layout_height="143dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/container2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
